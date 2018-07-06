@@ -732,3 +732,131 @@ ORDER BY growth
 
 占用内存：3308k
 */
+
+/*
+统计各个部门对应员工涨幅的次数总和，给出部门编码dept_no、部门名称dept_name以及次数sum
+CREATE TABLE `departments` (
+`dept_no` char(4) NOT NULL,
+`dept_name` varchar(40) NOT NULL,
+PRIMARY KEY (`dept_no`));
+CREATE TABLE `dept_emp` (
+`emp_no` int(11) NOT NULL,
+`dept_no` char(4) NOT NULL,
+`from_date` date NOT NULL,
+`to_date` date NOT NULL,
+PRIMARY KEY (`emp_no`,`dept_no`));
+CREATE TABLE `salaries` (
+`emp_no` int(11) NOT NULL,
+`salary` int(11) NOT NULL,
+`from_date` date NOT NULL,
+`to_date` date NOT NULL,
+PRIMARY KEY (`emp_no`,`from_date`));
+*/
+select de.dept_no, d.dept_name, count(s.salary) as sum
+from dept_emp de
+left join salaries s on de.emp_no = s.emp_no
+left join departments d on de.dept_no = d.dept_no
+group by de.dept_no;
+
+
+/*
+运行时间：14ms
+
+占用内存：3420k
+*/
+
+select de.dept_no, d.dept_name, count(s.salary) as sum
+from dept_emp de, salaries s, departments d
+where de.emp_no = s.emp_no
+and de.dept_no = d.dept_no
+group by de.dept_no;
+
+
+/*
+运行时间：15ms
+
+占用内存：3420k
+*/
+
+/*
+对所有员工的当前(to_date='9999-01-01')薪水按照salary进行按照1-N的排名，相同salary并列且按照emp_no升序排列
+CREATE TABLE `salaries` (
+`emp_no` int(11) NOT NULL,
+`salary` int(11) NOT NULL,
+`from_date` date NOT NULL,
+`to_date` date NOT NULL,
+PRIMARY KEY (`emp_no`,`from_date`));
+*/
+select s1.emp_no, s1.salary, count(distinct s2.salary) as rank
+from salaries s1, salaries s2
+where s1.to_date='9999-01-01'
+and s2.to_date='9999-01-01'
+and s1.salary <= s2.salary
+group by s1.emp_no
+order by s1.salary desc, s2.emp_no asc;
+
+
+/*
+运行时间：15ms
+
+占用内存：3556k
+*/
+
+
+/*
+获取所有非manager员工当前的薪水情况，给出dept_no、emp_no以及salary ，当前表示to_date='9999-01-01'
+CREATE TABLE `dept_emp` (
+`emp_no` int(11) NOT NULL,
+`dept_no` char(4) NOT NULL,
+`from_date` date NOT NULL,
+`to_date` date NOT NULL,
+PRIMARY KEY (`emp_no`,`dept_no`));
+CREATE TABLE `dept_manager` (
+`dept_no` char(4) NOT NULL,
+`emp_no` int(11) NOT NULL,
+`from_date` date NOT NULL,
+`to_date` date NOT NULL,
+PRIMARY KEY (`emp_no`,`dept_no`));
+CREATE TABLE `employees` (
+`emp_no` int(11) NOT NULL,
+`birth_date` date NOT NULL,
+`first_name` varchar(14) NOT NULL,
+`last_name` varchar(16) NOT NULL,
+`gender` char(1) NOT NULL,
+`hire_date` date NOT NULL,
+PRIMARY KEY (`emp_no`));
+CREATE TABLE `salaries` (
+`emp_no` int(11) NOT NULL,
+`salary` int(11) NOT NULL,
+`from_date` date NOT NULL,
+`to_date` date NOT NULL,
+PRIMARY KEY (`emp_no`,`from_date`));
+*/
+select de.dept_no, e.emp_no, s.salary
+from employees e
+inner join salaries s on e.emp_no = s.emp_no and s.to_date = '9999-01-01'
+inner join dept_emp de on de.emp_no = e.emp_no
+left join dept_manager dm on e.emp_no = dm.emp_no
+where dm.dept_no is null;
+
+
+/*
+运行时间：23ms
+
+占用内存：3300k
+*/
+
+select de.dept_no, ee.emp_no, s.salary
+from (
+    select e.emp_no
+    from employees e 
+    left join dept_manager dm on dm.emp_no = e.emp_no 
+    where dm.dept_no is null) as ee
+inner join salaries s on ee.emp_no = s.emp_no and s.to_date = '9999-01-01'
+inner join dept_emp de on ee.emp_no = de.emp_no;
+
+/*
+运行时间：15ms
+
+占用内存：3424k
+*/
