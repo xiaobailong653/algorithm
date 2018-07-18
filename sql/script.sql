@@ -318,7 +318,10 @@
 
     select m.dept_no, m.emp_no, s.salary 
     from dept_manager m 
-    inner join salaries s on m.to_date='9999-01-01' and s.to_date='9999-01-01' and m.emp_no = s.emp_no;
+    inner join salaries s 
+    on m.to_date='9999-01-01' 
+    and s.to_date='9999-01-01' 
+    and m.emp_no = s.emp_no;
 
 **运行时间：***20ms*
 **占用内存：***3428k*
@@ -408,7 +411,10 @@
 
     select e.emp_no, m.emp_no as manager_no 
     from dept_emp e 
-    inner join dept_manager m on m.dept_no = e.dept_no and m.to_date='9999-01-01' and e.emp_no <> m.emp_no;
+    inner join dept_manager m 
+    on m.dept_no = e.dept_no 
+    and m.to_date='9999-01-01' 
+    and e.emp_no <> m.emp_no;
 
 **运行时间：***25ms*
 **占用内存：***4440k*
@@ -1548,7 +1554,8 @@
     from_date date NOT NULL,
     to_date date DEFAULT NULL);
 
-    insert into titles_test values ('1', '10001', 'Senior Engineer', '1986-06-26', '9999-01-01'),
+    insert into titles_test values 
+    ('1', '10001', 'Senior Engineer', '1986-06-26', '9999-01-01'),
     ('2', '10002', 'Staff', '1996-08-03', '9999-01-01'),
     ('3', '10003', 'Senior Engineer', '1995-12-03', '9999-01-01'),
     ('4', '10004', 'Senior Engineer', '1995-12-03', '9999-01-01'),
@@ -1587,7 +1594,8 @@
     from_date date NOT NULL,
     to_date date DEFAULT NULL);
 
-    insert into titles_test values ('1', '10001', 'Senior Engineer', '1986-06-26', '9999-01-01'),
+    insert into titles_test values 
+    ('1', '10001', 'Senior Engineer', '1986-06-26', '9999-01-01'),
     ('2', '10002', 'Staff', '1996-08-03', '9999-01-01'),
     ('3', '10003', 'Senior Engineer', '1995-12-03', '9999-01-01'),
     ('4', '10004', 'Senior Engineer', '1995-12-03', '9999-01-01'),
@@ -1614,7 +1622,8 @@
     from_date date NOT NULL,
     to_date date DEFAULT NULL);
 
-    insert into titles_test values ('1', '10001', 'Senior Engineer', '1986-06-26', '9999-01-01'),
+    insert into titles_test values 
+    ('1', '10001', 'Senior Engineer', '1986-06-26', '9999-01-01'),
     ('2', '10002', 'Staff', '1996-08-03', '9999-01-01'),
     ('3', '10003', 'Senior Engineer', '1995-12-03', '9999-01-01'),
     ('4', '10004', 'Senior Engineer', '1995-12-03', '9999-01-01'),
@@ -1649,7 +1658,8 @@
     from_date date NOT NULL,
     to_date date DEFAULT NULL);
 
-    insert into titles_test values ('1', '10001', 'Senior Engineer', '1986-06-26', '9999-01-01'),
+    insert into titles_test values 
+    ('1', '10001', 'Senior Engineer', '1986-06-26', '9999-01-01'),
     ('2', '10002', 'Staff', '1996-08-03', '9999-01-01'),
     ('3', '10003', 'Senior Engineer', '1995-12-03', '9999-01-01'),
     ('4', '10004', 'Senior Engineer', '1995-12-03', '9999-01-01'),
@@ -1758,7 +1768,8 @@
 
 ### 脚本 1
 
-    update salaries set salary = salary * 1.1 where emp_no in (select emp_no from emp_bonus);
+    update salaries set salary = salary * 1.1 
+    where emp_no in (select emp_no from emp_bonus);
 
 **运行时间：***24ms*
 **占用内存：***3412k*
@@ -1895,7 +1906,9 @@
 
 ### 脚本 2
 
-    select first_name from employees order by substr(first_name, length(first_name) - 1)
+    select first_name 
+    from employees 
+    order by substr(first_name, length(first_name) - 1)
 
 **运行时间：***15ms*
 **占用内存：***3296k*
@@ -1914,7 +1927,9 @@
 
 ### 脚本 1
 
-    select dept_no, group_concat(emp_no) as employees from dept_emp group by dept_no;
+    select dept_no, group_concat(emp_no) as employees 
+    from dept_emp 
+    group by dept_no;
 
 **运行时间：***14ms*
 **占用内存：***3308k*
